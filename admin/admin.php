@@ -4,10 +4,10 @@
 <head>
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
 <title>Reservation Room</title>
-<link href="css/jquery-ui.css" rel="stylesheet">
-<link href="css/style.css" rel="stylesheet">
-<script src="js/jquery-1.10.2.js"></script>
-<script src="js/jquery-ui.js"></script>
+<link href="../css/jquery-ui.css" rel="stylesheet">
+<link href="../css/style.css" rel="stylesheet">
+<script src="../js/jquery-1.10.2.js"></script>
+<script src="../js/jquery-ui.js"></script>
 <!--<script src="lang/datepicker-fi.js"></script>-->
 <script>
     $(function() {
@@ -33,106 +33,19 @@
 </head>
 
 <body>
-<a href="/admin/index.php">ADMIN</a>
-<h1>Reservation Room</h1>
-<table border="1" cellpadding="5" width="800">
-	<tr>
-		<td valign="top">
-		<form action="book.php" method="post">
-			<h3>Make booking</h3>
-			<p><input checked="checked" name="item" type="radio" value="Meeting room" />Room 1
-			| <input name="item" type="radio" value="Swimming pool" />Room 2
-			| <input name="item" type="radio" value="Swimming pool" />Room 3
-			| <input name="item" type="radio" value="Swimming pool" />Room 4
-			| <input name="item" type="radio" value="Drill" />Room 5 | 
-			<input name="item" type="radio" value="Tennis court" />Room 6</p>
-			<table style="width: 70%">
-				<tr>
-					<td>Name:</td>
-					<td> <input maxlength="50" name="name" required="" type="text" /></td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-				</tr>
-				<tr>
-					<td>Nr. card:</td>
-					<td>
-			<input maxlength="20" name="phone" required="" type="text" /></td>
-					<td>&nbsp;</td>
-					<td>&nbsp;</td>
-				</tr>
-				<tr>
-					<td>Reservation date:</td>
-					<td>
-			<input id="from" name="start_day" required="" type="text" /></td>
-
-				</tr>
-				
-				<tr>
-					<td>Reservation Time</td>
-					<td>Start: <select name="start_hour">	
-			<option selected="selected">08</option>
-			<option>09</option>
-			<option>10</option>
-			<option>11</option>
-			<option>12</option>
-			<option>13</option>
-			<option>14</option>
-			<option>15</option>
-			<option>16</option>
-			<option>17</option>
-			<option>18</option>
-			<option>19</option>
-			<option>20</option>
-			<option>21</option>
-			<option>22</option>
-			<option>23</option>
-			</select>:<select name="start_minute">
-			<option selected="selected">00</option>
-			<option>00</option>
-			<option>10</option>
-			<option>20</option>
-			<option>30</option>
-			<option>40</option>
-			<option>50</option>
-			</select></td>
-					<td>&nbsp;</td>
-					<td>End: <select name="end_hour">
-			<option selected="selected">08</option>
-			<option>09</option>
-			<option>10</option>
-			<option>11</option>
-			<option>12</option>
-			<option>13</option>
-			<option>14</option>
-			<option>15</option>
-			<option>16</option>
-			<option>17</option>
-			<option>18</option>
-			<option>19</option>
-			</select>:<select name="end_minute">
-			<option>00</option>
-			<option>10</option>
-			<option>20</option>
-			<option>30</option>
-			<option>40</option>
-			<option>50</option>
-			<option selected="selected">30</option>
-			</select></td>
-				</tr>
-			</table>
-			<p>
-
-			<input name="book" type="submit" name="submit" value="Book" />
+<a href="logout.php">logout</a>
+<td valign="top">
+		<h3>Delete booking</h3>
+		<form action="delete.php" method="post">
+			<p></p>
+			ID: <input name="id" required="" type="text" /><br />
+			<p><input name="cancel" type="submit" value="Delete" /></p>
 		</form>
-
 		</td>
-	</tr>
-</table>
 <?php
-
 function draw_calendar($month,$year){
 
-	include 'config.php';
+	include '../config.php';
 
 	$conn = mysqli_connect($servername, $username, $password,  $dbname);
 
@@ -170,7 +83,7 @@ function draw_calendar($month,$year){
 			$result = mysqli_query($conn, $sql);
 
     		if (mysqli_num_rows($result) > 0) {
-
+    			// output data of each row
     			while($row = mysqli_fetch_assoc($result)) {
 					if($row["canceled"] == 1) $calendar .= "<font color=\"grey\"><s>";
     				$calendar .= "<b>" . $row["item"] . "</b><br>ID: " . $row["id"] . "<br>" . $row["name"] . "<br>" . $row["phone"] . "<br>";
@@ -215,11 +128,11 @@ function draw_calendar($month,$year){
 	$calendar.= '</table>';
 	
 	mysqli_close($conn);
-	
+
 	return $calendar;
 }
 
-include 'config.php';
+include '../config.php';
 
 $d = new DateTime(date("Y-m-d"));
 echo '<h3>' . $months[$d->format('n')-1] . ' ' . $d->format('Y') . '</h3>';
@@ -232,9 +145,5 @@ echo draw_calendar($d->format('m'),$d->format('Y'));
 // $d->modify( 'first day of next month' );
 // echo '<h3>' . $months[$d->format('n')-1] . ' ' . $d->format('Y') . '</h3>';
 // echo draw_calendar($d->format('m'),$d->format('Y'));
-
 ?>
-
 </body>
-
-</html>

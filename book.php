@@ -18,10 +18,8 @@ session_start();
 	{
 		include 'config.php';
 		
-		// Create connection
 		$conn = mysqli_connect($servername, $username, $password,  $dbname);
 		
-		// Check connection
 		if (!$conn) {
 			die("Connection failed: " . mysqli_connect_error());
 		}
@@ -37,32 +35,47 @@ session_start();
 		$start_epoch = $start_day + $start_time;
 		$end_epoch = $start_day + $end_time;
 		
-		// prevent double booking
-		$sql = "SELECT * FROM $tablename WHERE item='$item' AND (start_day>=$start_day OR start_day>=$start_day) AND canceled=0";
-		$result = mysqli_query($conn, $sql);
-		if (mysqli_num_rows($result) > 0) {
-			// handle every row
-			while($row = mysqli_fetch_assoc($result)) {
-				// check overlapping at 10 minutes interval
-				for ($i = $start_epoch; $i <= $end_epoch; $i=$i+600) {
-					if ($i>($row["start_day"]+$row["start_time"]) && $i<($row["start_day"]+$row["end_time"])) {
-						echo '<h3><font color="red">Unfortunately ' . $item . ' has already been booked for the time requested.</font></h3>';
-						goto end;
-					}
-				}
-			}				
-		}
-				
-		$sql = "INSERT INTO $tablename (name, phone, item, start_day, start_time, end_time, canceled)
-			VALUES ('$name','$phone', '$item', $start_day, $start_time, $end_time, 0)";
-		if (mysqli_query($conn, $sql)) {
-		    echo "<h3>Booking succeed.</h3>";
-		} else {
-			echo "Error: " . $sql . "<br>" . mysqli_error($conn);
-		}
 		
-		end:
-		mysqli_close($conn);
+		$sql = "SELECT * FROM $tablename WHERE item='$item' AND (start_day>=$start_day OR start_day>=$start_day) AND canceled=0";
+		$sql2 = "SELECT COUNT(*) FROM $tablename GROUP BY phone HAVING COUNT(*) > 3";
+		$rez = mysqli_query($conn, $sql2);
+		$result = mysqli_query($conn, $sql);
+
+		$rw = mysqli_fetch_assoc($rez);
+		$ph = $rw['COUNT(*)'];
+		// echo $ph;
+		
+		if($ph > 3)
+		{
+			echo '<h3><font color="red">Unfortunately ' . $item . ' has to many times booked room.</font></h3>';
+		}
+		else
+		{
+			if (mysqli_num_rows($result) > 0) {
+
+				while($row = mysqli_fetch_assoc($result)) {
+
+					for ($i = $start_epoch; $i <= $end_epoch; $i=$i+600) {
+						if ($i>($row["start_day"]+$row["start_time"]) && $i<($row["start_day"]+$row["end_time"])) {
+							echo '<h3><font color="red">Unfortunately ' . $item . ' has already been booked for the time requested.</font></h3>';
+							goto end;
+						}
+					}
+				}				
+			}
+					
+			$sql = "INSERT INTO $tablename (name, phone, item, start_day, start_time, end_time, canceled)
+				VALUES ('$name','$phone', '$item', $start_day, $start_time, $end_time, 0)";
+			if (mysqli_query($conn, $sql)) {
+				echo "<h3>Booking succeed.</h3>";
+			} else {
+				echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+			}
+			
+			end:
+			mysqli_close($conn);
+		}
+
 	}
 ?>
 
