@@ -13,7 +13,7 @@
     $(function() {
 	<!--$.datepicker.setDefaults($.datepicker.regional['fi']);-->
     $( "#from" ).datepicker({
-      defaultDate: "+1w",
+      defaultDate: "+0w",
       changeMonth: true,
       numberOfMonths: 3,
       onClose: function( selectedDate ) {
@@ -40,12 +40,12 @@
 		<td valign="top">
 		<form action="book.php" method="post">
 			<h3>Make booking</h3>
-			<p><input checked="checked" name="item" type="radio" value="Meeting room" />Room 1
-			| <input name="item" type="radio" value="Swimming pool" />Room 2
-			| <input name="item" type="radio" value="Swimming pool" />Room 3
-			| <input name="item" type="radio" value="Swimming pool" />Room 4
-			| <input name="item" type="radio" value="Drill" />Room 5 | 
-			<input name="item" type="radio" value="Tennis court" />Room 6</p>
+			<p><input checked="checked" name="item" type="radio" value="Room 1" />Room 1
+			| <input name="item" type="radio" value="Room 2" />Room 2
+			| <input name="item" type="radio" value="Room 3" />Room 3
+			| <input name="item" type="radio" value="Room 4" />Room 4
+			| <input name="item" type="radio" value="Room 5" />Room 5 | 
+			<input name="item" type="radio" value="Room 6" />Room 6</p>
 			<table style="width: 70%">
 				<tr>
 					<td>Name:</td>
