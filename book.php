@@ -51,7 +51,8 @@ session_start();
 		}
 		else
 		{
-			$sqlQuery = mysqli_query($conn, "SELECT phone='$phone' FROM $tablename");
+			$day=intval(strtotime(htmlspecialchars($_POST['start_day'])));
+			$sqlQuery = mysqli_query($conn, "SELECT * FROM $tablename WHERE start_day=$day");
 			$secondResult = mysqli_fetch_assoc($sqlQuery);
 			$row = mysqli_fetch_assoc($result);
 
@@ -70,20 +71,20 @@ session_start();
 
 				}				
 			}
-			elseif(mysqli_num_rows($result) == 0 && $_POST["phone"] == $secondResult["phone"])
+			elseif($_POST['phone'] == $secondResult['phone'] && $start_time == $secondResult['start_time'])
 			{
-				echo "work";
+				echo $start_time;
 				goto end;
 			}
-			else
+			elseif(mysqli_num_rows($result) == 0)
 			{
-			$sql = "INSERT INTO $tablename (name, phone, item, start_day, start_time, end_time, canceled)
-				VALUES ('$name','$phone', '$item', $start_day, $start_time, $end_time, 0)";
-			if (mysqli_query($conn, $sql)) {
+				$sql = "INSERT INTO $tablename (name, phone, item, start_day, start_time, end_time, canceled)
+					VALUES ('$name','$phone', '$item', $start_day, $start_time, $end_time, 0)";
+				if (mysqli_query($conn, $sql)) {
 
-				echo "<h3>Booking succeed.</h3>";
-			} else {
-				echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+					echo "<h3>Booking succeed.</h3>";
+				} else {
+					echo "Error: " . $sql . "<br>" . mysqli_error($conn);
 			}
 	
 			end:
