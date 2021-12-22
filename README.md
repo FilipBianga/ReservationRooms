@@ -22,3 +22,4 @@
 <li style="font-weight: bold;"> Dołączenie grafiki pokoi</li>
 <li style="font-weight: bold;"> Poprawa frontu</li>
 </ol>
+
