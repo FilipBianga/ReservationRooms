@@ -1,0 +1,18 @@
+body {
+    background: snow;
+}
+
+#header {
+    padding: 20px;
+    background: rgb(2, 63, 135);
+}
+
+#content {
+    background: #f0f09d;
+    padding: 20px;
+}
+
+#footer {
+    padding: 20px;
+    background-color: #F5F5F5;
+}
