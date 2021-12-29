@@ -1,12 +1,26 @@
-html *
-{
-   font-family: Arial !important;
+body {
+    background: snow;
 }
+
+#header {
+    padding: 20px;
+    background: rgb(2, 63, 135);
+}
+
+#content {
+    background: #0199c2;
+    padding: 20px;
+}
+
+#footer {
+    padding: 20px;
+    background-color: #F5F5F5;
+}
+
 table.calendar {
 	border-left: 1px solid #999;
 }
-tr.calendar-row {
-}
+
 td.calendar-day {
 	min-height: 80px;
 	font-size: 11px;

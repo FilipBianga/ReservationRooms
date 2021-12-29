@@ -1,20 +1,24 @@
+<h1 style="font-weight: bold;">Storzono nowy szkielet - MVC:</h1>
+
+<p>Co mamy na ten moment</p>
 <ol>
-<p style="font-weight: bold; font-size: 20px;">Rzeczy do dopracowania:</p>
-<li style="font-weight: bold;"> Reservation time - mozliwość rezerwacji wstecz -> uniemożliwienie tego</li>
-<li style="font-weight: bold;"> Checkboxy - każdy pokój swój checkbox </li>
-<ul>
-<li  style="color: green;">Zrobione</li>
-</ul>
-<li style="font-weight: bold;"> Wklejenie schematu pokoi</li>
-<li  style="font-weight: bold;"> Student o danym nr karty może zarezerwować tylko 3 razy w tygodniu pokój</li> 
-<ul>
-<li  style="color: yellow;">zaczete - male poprawki trzeba dokonac</li>
-<li  style="color: yellow;">coś tam jest, działa to że student nie moze wziać 2 pokoi w jednym czasie</li>
-</ul>
-<li style="font-weight: bold;"> 3 godziny max rezerwacji.</li>
-<li style="font-weight: bold;"> System administracyjny</li>
-<ul>
-<li  style="color: yellow;">stworzony - dalsza modyfikacja</li>
-</ul>
+<li style="font-weight: bold;"> Podstawowy szkielet MVC na którym będziemy bazować</li>
+<li style="font-weight: bold;"> Połączenie z baza i system logowania - admin </li>
+<li style="font-weight: bold;"> Admin - usuwanie rekordów </li>
+<li style="font-weight: bold;"> Widoki rozszerzone</li>
 </ol>
-<img src="img/first-look.png">
+<hr>
+<img src="public/images/screen1.png">
+<hr>
+<img src="public/images/screen2.png">
+<hr>
+<img src="public/images/screen3.png">
+<hr>
+<h3 style="font-weight: bold;">TODO</h3>
+<hr>
+<ol>
+<li style="font-weight: bold;"> Stworzenie modelu do wyświetlania kalendarza z zaznaczonymi rezerwacjami</li>
+<li style="font-weight: bold;"> Panel administracyjnny z usuwaniem i modyfikowaniem pól </li>
+<li style="font-weight: bold;"> Dołączenie grafiki pokoi</li>
+<li style="font-weight: bold;"> Poprawa frontu</li>
+</ol>
