@@ -105,7 +105,7 @@ function draw_calendar($month,$year){
 
 		$calendar.= '<tr class="calendar-row"><td class="calendar-day-head">'.implode('</td><td class="calendar-day-head">',$headings).'</td></tr>';
 
-		$running_day = date('w',mktime(0,0,0,$month,1,$year));
+		$running_day = date('w',mktime(0,0,0,$month,0,$year));
 		$days_in_month = date('t',mktime(0,0,0,$month,1,$year));
 		$days_in_this_week = 1;
 		$day_counter = 0;
@@ -119,8 +119,13 @@ function draw_calendar($month,$year){
 		endfor;
 
 		for($list_day = 1; $list_day <= $days_in_month; $list_day++):
+			if($running_day == 6)
+			{
+				$calendar.= '<td class="calendar-day" style="background-color: grey;><div><p>closed</p></div>';
+			}
+			
 			$calendar.= '<td class="calendar-day">';
-
+			
 				$calendar.= '<div class="day-number">'.$list_day.'</div>';
 
 				$calendar.= str_repeat('<p> </p>',2);
@@ -150,9 +155,17 @@ function draw_calendar($month,$year){
 						if($row["canceled"] == 1) $calendar .= "</s></font>";
 					}
 				} else {
-					$calendar .= "No bookings";
+					if($running_day == 6)
+					{
+						$calendar .= "Library closed";
+					}
+					else
+					{
+						$calendar .= "No bookings";
+					}
+
 				}
-				
+
 			$calendar.= '</td>';
 			if($running_day == 6):
 				$calendar.= '</tr>';
@@ -200,22 +213,24 @@ echo draw_calendar($d->format('m'),$d->format('Y'));
 
 ?>
 <script>
-    $(function() {
-    $( "#from" ).datepicker({
-      defaultDate: "+0w",
-      changeMonth: true,
-      numberOfMonths: 3,
-      onClose: function( selectedDate ) {
-        $( "#to" ).datepicker( "option", "minDate", selectedDate );
-      }
-    });
-    $( "#to" ).datepicker({
-      defaultDate: "+1w",
-	  regional: "fi",
-      changeMonth: true,
-      numberOfMonths: 3,
-      onClose: function( selectedDate ) {
-        $( "#from" ).datepicker( "option", "maxDate", selectedDate );
-      }
-    });
-  });  </script>
+var dateToday = new Date();
+var dates = $("#from, #to").datepicker({
+	beforeShowDay: function(date) {
+		var show = true;
+		if (date.getDay() == 0) show =false;
+		return[show];
+	},
+	firstDay: 1,
+    defaultDate: "+1w",
+    changeMonth: true,
+    numberOfMonths: 3,
+    minDate: dateToday,
+	maxDate: 7,
+    onSelect: function(selectedDate) {
+        var option = this.id == "from" ? "minDate" : "maxDate",
+            instance = $(this).data("datepicker"),
+            date = $.datepicker.parseDate(instance.settings.dateFormat || $.datepicker._defaults.dateFormat, selectedDate, instance.settings);
+        dates.not(this).datepicker("option", option, date);
+    }
+});
+</script>
