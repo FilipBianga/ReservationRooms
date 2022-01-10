@@ -30,48 +30,52 @@
 			$start_epoch = $start_day + $start_time;
 			$end_epoch = $start_day + $end_time;
 			
-			
-			$sql = "SELECT * FROM reservation WHERE item='$item' AND (start_day>=$start_day OR start_day>=$start_day) AND canceled=0";
-			$sql2 = "SELECT COUNT(*) FROM reservation WHERE phone='$phone'";
-			$rez = $conn->query($sql2);
+			// W tym zapytaniu trzeba pokombinować z start_day i start_time
+			$sql = "SELECT * FROM reservation WHERE item='$item' AND start_day=$start_day AND start_time<=$start_time AND end_time>=$end_time";
+			// $sql2 = "SELECT COUNT(*) FROM reservation WHERE phone='$phone'";
+			// $rez = $conn->query($sql2);
 			$result = $conn->query($sql);
 
-			$rw = $rez->fetch(PDO::FETCH_ASSOC);
-			$ph = $rw['COUNT(*)'];
+			// $rw = $rez->fetch(PDO::FETCH_ASSOC);
+			// $ph = $rw['COUNT(*)'];
 
 			// echo $ph;
-			if($ph >= 3)
-			{
-				echo '<h3><font color="red">Unfortunately ' . $item . ' has to many times booked room.</font></h3>';
-			}
-			else
-			{
+			// if($ph >= 3)
+			// {
+			// 	echo '<h3><font color="red">Unfortunately ' . $item . ' has to many times booked room.</font></h3>';
+			// }
+			// else
+			// {
 				$day=intval(strtotime(htmlspecialchars($_POST['start_day'])));
-				$sqlQuery = $conn->query("SELECT * FROM reservation WHERE start_day=$day");
-				$secondResult = $sqlQuery->fetch(PDO::FETCH_ASSOC);
+				// $sqlQuery = $conn->query("SELECT * FROM reservation WHERE start_day=$day");
+				// $secondResult = $sqlQuery->fetch(PDO::FETCH_ASSOC);
 				$row = $result->fetch(PDO::FETCH_ASSOC);
-
-				if ($result->rowCount() > 0)
+				
+				if ($result->fetchColumn() > 0)
 				{
-					while($row) {
+					// while($row) {
 
-						for ($i = $start_epoch; $i <= $end_epoch; $i=$i+600) {
+					// 	for ($i = $start_epoch; $i <= $end_epoch; $i=$i+600) {
 
-							if ($i>($row["start_day"]+$row["start_time"]) && $i<($row["start_day"]+$row["end_time"])) {
-									echo '<h3><font color="red">Unfortunately ' . $item . ' has already been booked for the time and nr.card requested.</font></h3>';
-									goto end;
-							}
+					// 		if ($i>($row["start_day"]+$row["start_time"]) && $i<($row["start_day"]+$row["end_time"])) {
+					// 			print_r($row);
+					// 			echo $i;
+					// 			print_r($result);
+					// 				echo '<h3><font color="red">Unfortunately ' . $item . ' has already been booked for the time and nr.card requested.</font></h3>';
+					// 				goto end;
+					// 		}
 							
-						}
+					// 	}
 
-					}				
+					// }		
+
+					echo "row wiecej niz 0 czyli -> ".$result->rowCount();	
 				}
 				else
 				{
 					$sql = "INSERT INTO reservation (name, phone, item, start_day, start_time, end_time, canceled)
 						VALUES ('$name','$phone', '$item', $start_day, $start_time, $end_time, 0)";
 					if ($conn->query($sql)) {
-
 						echo "<h3>Booking succeed.</h3>";
 					} else {
 						echo "\nPDO::errorInfo():\n";
@@ -85,7 +89,7 @@
 			$conn = null;
 
 			}
-		}
+		// }
 		catch (PDOException $e)
 		{
 			echo 'Connection failed: ' . $e->getMessage();
