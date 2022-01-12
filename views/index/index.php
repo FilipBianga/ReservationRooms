@@ -139,7 +139,7 @@ function draw_calendar($month,$year){
 
 					while($row = $result->fetch(PDO::FETCH_ASSOC)) {
 						if($row["canceled"] == 1) $calendar .= "<font color=\"grey\"><s>";
-						$calendar .= "<b>" . $row["item"] . "</b><br>ID: " . $row["id"] . "<br>" . $row["name"] . "<br>" . $row["phone"] . "<br>";
+						$calendar .= "<div class='border-booking'><b>" . $row["item"] . "</b><br>ID: " . $row["id"] . "<br>" . $row["name"] . "<br>" . $row["phone"] . "<br>";
 						if($current_epoch == $row["start_day"] AND $current_epoch != $row["start_day"]) {
 							$calendar .= "Booking starts: " . sprintf("%02d:%02d", $row["start_time"]/60/60, ($row["start_time"]%(60*60)/60)) . "<br><hr><br>";
 						}
@@ -147,10 +147,10 @@ function draw_calendar($month,$year){
 							$calendar .= "Booking starts: " . sprintf("%02d:%02d", $row["start_time"]/60/60, ($row["start_time"]%(60*60)/60)) . "<br>";
 						}
 						if($current_epoch == $row["start_day"]) {
-							$calendar .= "Booking ends: " . sprintf("%02d:%02d", $row["end_time"]/60/60, ($row["end_time"]%(60*60)/60)) . "<br><hr><br>";
+							$calendar .= "Booking ends: " . sprintf("%02d:%02d", $row["end_time"]/60/60, ($row["end_time"]%(60*60)/60)) . "<br><hr><br></div>";
 						}
 						if($current_epoch != $row["start_day"] AND $current_epoch != $row["start_day"]) {
-							$calendar .= "Booking: 24h<br><hr><br>";
+							$calendar .= "Booking: 24h<br><hr><br></div>";
 						}
 						if($row["canceled"] == 1) $calendar .= "</s></font>";
 					}
