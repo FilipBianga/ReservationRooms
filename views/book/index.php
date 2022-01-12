@@ -31,27 +31,19 @@
 			$end_epoch = $start_day + $end_time;
 			
 			// W tym zapytaniu trzeba pokombinować z start_day i start_time
-			$sql = "SELECT * FROM reservation WHERE item='$item' AND start_day=$start_day AND start_time<=$start_time AND end_time>=$end_time";
-			// $sql2 = "SELECT COUNT(*) FROM reservation WHERE phone='$phone'";
-			// $rez = $conn->query($sql2);
+			$sql = "SELECT * FROM reservation WHERE item='$item' AND start_day=$start_day AND (start_time<=$start_time AND end_time>=$start_time) OR phone=$phone AND start_day=$start_day";
 			$result = $conn->query($sql);
 
-			// $rw = $rez->fetch(PDO::FETCH_ASSOC);
-			// $ph = $rw['COUNT(*)'];
+			$sql_query = "SELECT COUNT(*) FROM reservation WHERE phone=$phone";
+			$result_query = $conn->query($sql_query);
+			$row_query = $result_query->fetch(PDO::FETCH_ASSOC);
+			$ph = $row_query['COUNT(*)'];
 
-			// echo $ph;
-			// if($ph >= 3)
-			// {
-			// 	echo '<h3><font color="red">Unfortunately ' . $item . ' has to many times booked room.</font></h3>';
-			// }
-			// else
-			// {
 				$day=intval(strtotime(htmlspecialchars($_POST['start_day'])));
-				// $sqlQuery = $conn->query("SELECT * FROM reservation WHERE start_day=$day");
-				// $secondResult = $sqlQuery->fetch(PDO::FETCH_ASSOC);
 				$row = $result->fetch(PDO::FETCH_ASSOC);
-				
-				if ($result->fetchColumn() > 0)
+				$max_time = $end_time - $start_time;
+
+				if ($result->rowCount() > 0 || $ph >= 3 || $max_time > 10800)
 				{
 					// while($row) {
 
@@ -69,7 +61,7 @@
 
 					// }		
 
-					echo "row wiecej niz 0 czyli -> ".$result->rowCount();	
+					echo '<h3><font color="red">Unfortunately ' . $item . ' has already been booked for the time and nr.card requested.</font></h3>';	
 				}
 				else
 				{
