@@ -9,27 +9,6 @@
 <script src="../js/jquery-1.10.2.js"></script>
 <script src="../js/jquery-ui.js"></script>
 <!--<script src="lang/datepicker-fi.js"></script>-->
-<script>
-    $(function() {
-	<!--$.datepicker.setDefaults($.datepicker.regional['fi']);-->
-    $( "#from" ).datepicker({
-      defaultDate: "+1w",
-      changeMonth: true,
-      numberOfMonths: 3,
-      onClose: function( selectedDate ) {
-        $( "#to" ).datepicker( "option", "minDate", selectedDate );
-      }
-    });
-    $( "#to" ).datepicker({
-      defaultDate: "+1w",
-	  regional: "fi",
-      changeMonth: true,
-      numberOfMonths: 3,
-      onClose: function( selectedDate ) {
-        $( "#from" ).datepicker( "option", "maxDate", selectedDate );
-      }
-    });
-  });  </script>
 </head>
 
 <body>
@@ -50,14 +29,20 @@ function draw_calendar($month,$year){
 	include "config/calendar.php";
 	$conn = new Database();
 
-	
 	try
 	{
+
+		$today = intval(strtotime(htmlspecialchars(date("Y/m/d"))));
+
+
+		$sql_delete = "DELETE FROM reservation WHERE start_day<$today";
+		$conn->query($sql_delete);
+
 		$calendar = '<table cellpadding="0" cellspacing="0" class="calendar">';
 
 		$calendar.= '<tr class="calendar-row"><td class="calendar-day-head">'.implode('</td><td class="calendar-day-head">',$headings).'</td></tr>';
 
-		$running_day = date('w',mktime(0,0,0,$month,1,$year));
+		$running_day = date('w',mktime(0,0,0,$month,0,$year));
 		$days_in_month = date('t',mktime(0,0,0,$month,1,$year));
 		$days_in_this_week = 1;
 		$day_counter = 0;
@@ -71,8 +56,13 @@ function draw_calendar($month,$year){
 		endfor;
 
 		for($list_day = 1; $list_day <= $days_in_month; $list_day++):
+			if($running_day == 6)
+			{
+				$calendar.= '<td class="calendar-day" style="background-color: grey;><div><p>closed</p></div>';
+			}
+			
 			$calendar.= '<td class="calendar-day">';
-
+			
 				$calendar.= '<div class="day-number">'.$list_day.'</div>';
 
 				$calendar.= str_repeat('<p> </p>',2);
@@ -86,7 +76,7 @@ function draw_calendar($month,$year){
 
 					while($row = $result->fetch(PDO::FETCH_ASSOC)) {
 						if($row["canceled"] == 1) $calendar .= "<font color=\"grey\"><s>";
-						$calendar .= "<b>" . $row["item"] . "</b><br>ID: " . $row["id"] . "<br>" . $row["name"] . "<br>" . $row["phone"] . "<br>";
+						$calendar .= "<div class='border-booking'><b>" . $row["item"] . "</b><br>ID: " . $row["id"] . "<br>" . $row["name"] . "<br>" . $row["card"] . "<br>";
 						if($current_epoch == $row["start_day"] AND $current_epoch != $row["start_day"]) {
 							$calendar .= "Booking starts: " . sprintf("%02d:%02d", $row["start_time"]/60/60, ($row["start_time"]%(60*60)/60)) . "<br><hr><br>";
 						}
@@ -94,17 +84,25 @@ function draw_calendar($month,$year){
 							$calendar .= "Booking starts: " . sprintf("%02d:%02d", $row["start_time"]/60/60, ($row["start_time"]%(60*60)/60)) . "<br>";
 						}
 						if($current_epoch == $row["start_day"]) {
-							$calendar .= "Booking ends: " . sprintf("%02d:%02d", $row["end_time"]/60/60, ($row["end_time"]%(60*60)/60)) . "<br><hr><br>";
+							$calendar .= "Booking ends: " . sprintf("%02d:%02d", $row["end_time"]/60/60, ($row["end_time"]%(60*60)/60)) . "<br><hr><br></div>";
 						}
 						if($current_epoch != $row["start_day"] AND $current_epoch != $row["start_day"]) {
-							$calendar .= "Booking: 24h<br><hr><br>";
+							$calendar .= "Booking: 24h<br><hr><br></div>";
 						}
 						if($row["canceled"] == 1) $calendar .= "</s></font>";
 					}
 				} else {
-					$calendar .= "No bookings";
+					if($running_day == 6)
+					{
+						$calendar .= "Library closed";
+					}
+					else
+					{
+						$calendar .= "No bookings";
+					}
+
 				}
-				
+
 			$calendar.= '</td>';
 			if($running_day == 6):
 				$calendar.= '</tr>';
@@ -126,14 +124,13 @@ function draw_calendar($month,$year){
 		$calendar.= '</tr>';
 
 		$calendar.= '</table>';
-
+		
 		$conn = null;
 	}
 	catch (PDOException $e)
 	{
 		echo 'Connection failed: ' . $e->getMessage();
 	}
-	
 	return $calendar;
 }
 
@@ -152,3 +149,25 @@ echo draw_calendar($d->format('m'),$d->format('Y'));
 // echo draw_calendar($d->format('m'),$d->format('Y'));
 
 ?>
+<script>
+var dateToday = new Date();
+var dates = $("#from, #to").datepicker({
+	beforeShowDay: function(date) {
+		var show = true;
+		if (date.getDay() == 0) show =false;
+		return[show];
+	},
+	firstDay: 1,
+    defaultDate: "+1w",
+    changeMonth: true,
+    numberOfMonths: 3,
+    minDate: dateToday,
+	maxDate: 7,
+    onSelect: function(selectedDate) {
+        var option = this.id == "from" ? "minDate" : "maxDate",
+            instance = $(this).data("datepicker"),
+            date = $.datepicker.parseDate(instance.settings.dateFormat || $.datepicker._defaults.dateFormat, selectedDate, instance.settings);
+        dates.not(this).datepicker("option", option, date);
+    }
+});
+</script>

@@ -10,7 +10,6 @@
 
 <?php
 
-	
 	if(empty($errors))
 	{
         include "config/calendar.php";
@@ -24,17 +23,17 @@
 			// $end_day = intval(strtotime(htmlspecialchars($_POST["end_day"])));
 			$end_time = (60*60*intval(htmlspecialchars($_POST["end_hour"]))) + (60*intval(htmlspecialchars($_POST["end_minute"])));
 			$name = htmlspecialchars($_POST["name"]);
-			$phone = htmlspecialchars($_POST["phone"]);
+			$card = htmlspecialchars($_POST["card"]);
 			$item = htmlspecialchars($_POST["item"]);
 			
 			$start_epoch = $start_day + $start_time;
 			$end_epoch = $start_day + $end_time;
 			
 			// W tym zapytaniu trzeba pokombinować z start_day i start_time
-			$sql = "SELECT * FROM reservation WHERE item='$item' AND start_day=$start_day AND (start_time<=$start_time AND end_time>=$start_time) OR phone=$phone AND start_day=$start_day";
+			$sql = "SELECT * FROM reservation WHERE item='$item' AND start_day=$start_day AND (start_time<=$start_time AND end_time>=$start_time) OR card=$card AND start_day=$start_day";
 			$result = $conn->query($sql);
 
-			$sql_query = "SELECT COUNT(*) FROM reservation WHERE phone=$phone";
+			$sql_query = "SELECT COUNT(*) FROM reservation WHERE card=$card";
 			$result_query = $conn->query($sql_query);
 			$row_query = $result_query->fetch(PDO::FETCH_ASSOC);
 			$ph = $row_query['COUNT(*)'];
@@ -65,8 +64,8 @@
 				}
 				else
 				{
-					$sql = "INSERT INTO reservation (name, phone, item, start_day, start_time, end_time, canceled)
-						VALUES ('$name','$phone', '$item', $start_day, $start_time, $end_time, 0)";
+					$sql = "INSERT INTO reservation (name, card, item, start_day, start_time, end_time, canceled)
+						VALUES ('$name','$card', '$item', $start_day, $start_time, $end_time, 0)";
 					if ($conn->query($sql)) {
 						echo "<h3>Booking succeed.</h3>";
 					} else {
@@ -89,7 +88,7 @@
 	}
 ?>
 
-<a href="index"><p>Back to the booking calendar</p></a>
+<a href="http://localhost/"><p>Back to the booking calendar</p></a>
 
 </body>
 

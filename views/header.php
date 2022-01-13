@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="<?php echo URL;?>public/css/jquery-ui.css">
     <script src="<?php echo URL;?>public/js/jquery-1.10.2.js"></script>
     <script src="<?php echo URL;?>public/js/jquery-ui.js"></script>
+    <meta charset="UTF-8">
 </head>
 <body>
     <?php Session::init(); ?>

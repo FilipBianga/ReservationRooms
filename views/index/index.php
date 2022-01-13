@@ -1,4 +1,5 @@
 <h1>Reservation Room</h1>
+
 <table border="1" cellpadding="5" width="800">
 	<tr>
 		<td valign="top">
@@ -20,7 +21,7 @@
 				<tr>
 					<td>Nr. card:</td>
 					<td>
-			<input maxlength="20" name="phone" required="" type="text" /></td>
+			<input maxlength="20" name="card" required="" type="text" /></td>
 					<td>&nbsp;</td>
 					<td>&nbsp;</td>
 				</tr>
@@ -101,6 +102,13 @@ function draw_calendar($month,$year){
 
 	try
 	{
+
+		$today = intval(strtotime(htmlspecialchars(date("Y/m/d"))));
+
+
+		$sql_delete = "DELETE FROM reservation WHERE start_day<$today";
+		$conn->query($sql_delete);
+
 		$calendar = '<table cellpadding="0" cellspacing="0" class="calendar">';
 
 		$calendar.= '<tr class="calendar-row"><td class="calendar-day-head">'.implode('</td><td class="calendar-day-head">',$headings).'</td></tr>';
@@ -139,7 +147,7 @@ function draw_calendar($month,$year){
 
 					while($row = $result->fetch(PDO::FETCH_ASSOC)) {
 						if($row["canceled"] == 1) $calendar .= "<font color=\"grey\"><s>";
-						$calendar .= "<div class='border-booking'><b>" . $row["item"] . "</b><br>ID: " . $row["id"] . "<br>" . $row["name"] . "<br>" . $row["phone"] . "<br>";
+						$calendar .= "<div class='border-booking'><b>" . $row["item"] . "</b><br>ID: " . $row["id"] . "<br>" . $row["name"] . "<br>" . $row["card"] . "<br>";
 						if($current_epoch == $row["start_day"] AND $current_epoch != $row["start_day"]) {
 							$calendar .= "Booking starts: " . sprintf("%02d:%02d", $row["start_time"]/60/60, ($row["start_time"]%(60*60)/60)) . "<br><hr><br>";
 						}
