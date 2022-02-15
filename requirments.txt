@@ -1,0 +1,3 @@
+sudo apt install composer
+composer install
+composer require dcblogdev/pdo-wrapper
